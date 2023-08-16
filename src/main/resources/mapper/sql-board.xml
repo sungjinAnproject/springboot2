@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.book.springboot.board.mapper.BoardMapper">
+<!--    메퍼의  네임스페이스를 지정  springboot.board.dto.BoardDto-->
+    <select id="selectBoardList" resultType="com.book.springboot.board.dto.BoardDto">
+        <![CDATA[
+                SELECT
+                    board_idx
+                    ,title
+                    ,hit_cnt
+                    ,created_datetime
+                FROM
+                    t_board
+                WHERE
+                    deleted_yn ='N'
+                ORDER BY board_idx DESC
+            ]]>
+    </select>
+
+    <insert id ="insertBoard" parameterType="com.book.springboot.board.dto.BoardDto">
+        <![CDATA[
+            INSERT INTO t_board
+                (
+                        title
+                        ,contents
+                        ,created_datetime
+                        ,creator_id
+                )
+                VALUES
+                (
+                        #{title}
+                        ,#{contents}
+                        ,NOW()
+                        ,'admin'
+                )
+        ]]>
+    </insert>
+
+
+    <update id="updateHitCount" parameterType="int">
+<!--        조회수를 증가하는 쿼리 : 현재 조회수에서 1을 증가-->
+        <![CDATA[
+            UPDATE
+                t_board
+            SET
+                hit_cnt = hit_cnt +1
+            WHERE
+                board_idx = #{boardIdx}
+            ]]>
+    </update>
+
+    <select id="selectBoardDetail" parameterType="int" resultType="com.book.springboot.board.dto.BoardDto">
+<!--        선택된 게시글의 내용을 조회하는 쿼리
+            앞의 게시글 목록에서 선택할 때 선택된 글 번호를 추가했었습니다. 그 글 번호에 해당하는 내용을 조회합니다.-->
+        <![CDATA[
+            SELECT
+                board_idx
+                ,title
+                ,contents
+                ,hit_cnt
+                ,created_datetime
+                ,creator_id
+            FROM
+                t_board
+            WHERE
+                board_idx = #{boardIdx} AND deleted_yn = 'N'
+        ]]>
+    </select>
+
+    <update id="updateBoard" parameterType="com.book.springboot.board.dto.BoardDto">
+<!--        글수정 쿼리입니다.-->
+        <![CDATA[
+            UPDATE t_board
+             SET
+				title               = #{title},
+				contents            = #{contents},
+				updated_datetime    = Now(),
+				updater_id          = 'admin'
+			WHERE
+				board_idx           = #{boardIdx}
+        ]]>
+    </update>
+
+    <update id="deleteBoard" parameterType="int">
+<!--        글삭제 쿼리입니다.
+            데이터를 삭제하지 않고 구분 컬럼의 값만 변경-->
+        <![CDATA[
+            UPDATE t_board
+             SET
+                 deleted_yn          = 'Y'
+                ,updated_datetime   = NOW()
+                ,updater_id         = 'admin'
+            WHERE
+                board_idx           =#{board_idx}
+        ]]>
+
+    </update>
+</mapper>
