@@ -3,6 +3,7 @@ package com.book.springboot.board.controller;
 
 import com.book.springboot.board.service.BoardService;
 import com.book.springboot.board.dto.BoardDto;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.List;
 
 //스프링에서 컨트롤러를 의미 => 컨트롤러로 동작하게 해줌
 @Controller
+//@Slf4j
 public class BoardController {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
